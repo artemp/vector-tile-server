@@ -1,0 +1,36 @@
+############################ Boost.Build.v2 #############################################
+
+local MAPNIK_DIR = "/opt/mapnik" ;
+local MAPNIK_DEPS_DIR = "/opt/mapnik_deps" ;
+local BOOST_DIR = "/opt/boost" ;
+
+
+lib mapnik : : <name>mapnik <search>$(MAPNIK_DIR)/lib ;
+lib program_options : : <name>boost_program_options <search>$(BOOST_DIR)/lib ;
+lib system : : <name>boost_system <search>$(BOOST_DIR)/lib ;
+lib regex : : <name>boost_regex <search>$(BOOST_DIR)/lib ;
+lib sqlite3 : : <name>sqlite3 <search>$(MAPNIK_DIR)/lib ;
+lib icuuc : : <name>icuuc <search>$(MAPNIK_DEPS_DIR)/lib ;
+lib protobuf-lite : : <name>protobuf-lite <search>$(MAPNIK_DEPS_DIR)/lib ;
+
+exe vector-tile-server
+    :
+    main.cpp
+    .//mapnik
+    .//icuuc
+    .//program_options
+    .//regex
+    .//system
+    .//protobuf-lite
+    :
+    <include>$(BOOST_DIR)/include
+    <include>$(MAPNIK_DIR)/include
+    <include>$(MAPNIK_DIR)/include/mapnik/agg
+    <include>$(MAPNIK_DEPS_DIR)/include
+    <include>$(MAPNIK_DEPS_DIR)/include/freetype2
+    <cxxflags>-DMAPNIK_THREADSAFE
+    <cxxflags>-DMAPNIK_LOG
+    <cxxflags>-DMAPNIK_DEFAULT_LOG_SEVERITY=2
+    ;
+
+########################################################################################
