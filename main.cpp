@@ -1,79 +1,38 @@
-#include <iostream>
+/*****************************************************************************
+ *
+ * This file is part of Mapnik (c++ mapping toolkit)
+ *
+ * Copyright (C) 2012 Artem Pavlenko
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ *****************************************************************************/
 
-#include <mapnik/config.hpp>
-#include <mapnik/vector_renderer.hpp>
-#include <mapnik/vector_renderer_impl.hpp>
-#include <mapnik/feature_style_processor_impl.hpp>
+// mapnik
+//#include <mapnik/vector_renderer_impl.hpp>
+//#include <mapnik/feature_style_processor_impl.hpp>
+#include <mapnik/debug.hpp>
 #include <mapnik/load_map.hpp>
 #include <mapnik/datasource_cache.hpp>
 #include <mapnik/font_engine_freetype.hpp>
-#include <mapnik/util/geometry_to_wkb.hpp>
-//boost
-#include <boost/algorithm/string/trim.hpp>
-// proto
-#include <google/protobuf/io/coded_stream.h>
-#include <google/protobuf/io/zero_copy_stream_impl_lite.h>
+#include "vector_renderer.hpp"
+#include "dummy_backend.hpp"
 
-namespace mapnik
-{
-struct dummy_backend
-{
-    template <typename T>
-    void add_path(T & path)
-    {
-        mapnik::vertex2d vtx(mapnik::vertex2d::no_init);
-        path.rewind(0);
-        std::cout << "<Path>" << std::endl;
-        std::string output;
-        google::protobuf::io::ZeroCopyOutputStream* raw_output = new google::protobuf::io::StringOutputStream(&output);
-        google::protobuf::io::CodedOutputStream* coded_output = new google::protobuf::io::CodedOutputStream(raw_output);
-        unsigned count = 0;
-        uint32_t x=0,y=0;
-        while ((vtx.cmd = path.vertex(&vtx.x, &vtx.y)) != mapnik::SEG_END)
-        {
-            std::cout << vtx.x << "," << vtx.y << " cmd=" << vtx.cmd << std::endl;
-
-            if (count > 0 && vtx.cmd == mapnik::SEG_LINETO &&
-                std::fabs(static_cast<uint32_t>(vtx.x) - x) < 1.0 &&
-                std::fabs(static_cast<uint32_t>(vtx.y) - y) < 1.0)
-            {
-                continue;
-            }
-            x = static_cast<uint32_t>(vtx.x);
-            y = static_cast<uint32_t>(vtx.y);
-            coded_output->WriteVarint32(x);
-            coded_output->WriteVarint32(y);
-            coded_output->WriteTag(vtx.cmd);
-            ++count;
-        }
-
-        std::cout << "count = " << count << std::endl;
-        std::cout << "size = " << (count*(8 + 8 + 4)) << " new_size=" << output.size() << std::endl;
-        std::string hex = mapnik::util::to_hex(output.data(),output.size());
-        boost::algorithm::trim_right_if(hex,is_any_of("0"));
-        std::cout << hex << std::endl;
-        std::cout << "</Path>" << std::endl;
-
-        google::protobuf::io::ZeroCopyInputStream* raw_input = new google::protobuf::io::ArrayInputStream(output.c_str(),output.size());
-        google::protobuf::io::CodedInputStream * coded_input = new google::protobuf::io::CodedInputStream(raw_input);
-        for (int i = 0; i < count ; ++i)
-        {
-            coded_input->ReadVarint32(&x);
-            coded_input->ReadVarint32(&y);
-            uint32_t cmd = coded_input->ReadTag();
-            std::cout << x << "," << y << " cmd=" << cmd << std::endl;
-        }
-        delete coded_output;
-        delete raw_output;
-    }
-
-};
-
-
-template class feature_style_processor<vector_renderer<dummy_backend> >;
-template class vector_renderer<dummy_backend>;
-
-}
+#include <iostream>
+#include <fstream>
+#include <mapnik/config.hpp>
 
 int main(int argc, char** argv)
 {
@@ -94,7 +53,15 @@ int main(int argc, char** argv)
     {
         std::cerr << "loading " << mapfile << "..."  << std::endl;
         mapnik::load_map(m, mapfile);
-        m.zoom_to_box(mapnik::box2d<double>(-8024477.28459,5445190.38849,-7381388.20071,5662941.44855));
+        //m.zoom_to_box(mapnik::box2d<double>(-8024477.28459,5445190.38849,-7381388.20071,5662941.44855));
+        //m.zoom_to_box(mapnik::box2d<double>(-141233.598318,6756305.73374,-140782.086463,6756728.00478));
+
+        //mapnik::box2d<double> bbox(-141233.598318,6755505.73374,-140782.086463,6756728.00478);
+        //mapnik::box2d<double> bbox(-141233.598318 + 1000,6755505.73374 + 1000,-140782.086463+1000,6756728.00478+1000);
+        mapnik::box2d<double> bbox(-141867.12449728712,6760702.277767269,-141255.62827100573,6761313.773993552);
+        m.zoom_to_box(mapnik::box2d<double>(bbox));
+
+        //m.zoom_to_box(mapnik::box2d<double>(-144715.338031,6746062.31756,-133583.388952,6764043.36075));
     }
     catch (...)
     {
@@ -102,8 +69,22 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
-    mapnik::dummy_backend backend;
+    std::string output;
+    mapnik::dummy_backend backend(output);
     mapnik::vector_renderer<mapnik::dummy_backend> ren(m, backend);
     ren.apply();
+
+    std::cerr << "TILE TAGS SIZE=" << backend.tags().size() << std::endl;
+    std::cerr << "TILE ELEM SIZE=" << backend.tile_elements().size() << std::endl;
+
+    uint32_t bytes = backend.output_vector_tile();
+    std::string trimmed = output.substr(0,bytes);
+    std::ofstream file("test.osmtile");
+    if (file)
+    {
+        file.write(trimmed.c_str(), trimmed.size());
+    }
+    file.flush();
+
     return EXIT_SUCCESS;
 }

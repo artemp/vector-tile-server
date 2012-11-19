@@ -38,7 +38,7 @@ namespace mapnik {
 
 template <typename T>
 class MAPNIK_DECL vector_renderer : public feature_style_processor<vector_renderer<T> >,
-				    private boost::noncopyable
+                                    private boost::noncopyable
 {
     typedef T backend_type;
 public:
@@ -56,16 +56,22 @@ public:
     void start_style_processing(feature_type_style const& st);
     void end_style_processing(feature_type_style const& st);
     // impl
+    void process(line_symbolizer const& sym,
+                 mapnik::feature_impl & feature,
+                 proj_transform const& prj_trans);
+
     void process(polygon_symbolizer const& sym,
-		 mapnik::feature_impl & feature,
-		 proj_transform const& prj_trans);
+                 mapnik::feature_impl & feature,
+                 proj_transform const& prj_trans);
+
+
     void painted(bool painted) {}
     inline bool process(rule::symbolizers const& /*syms*/,
-			mapnik::feature_impl & /*feature*/,
-			proj_transform const& /*prj_trans*/)
+                        mapnik::feature_impl & /*feature*/,
+                        proj_transform const& /*prj_trans*/)
     {
-	// agg renderer doesn't support processing of multiple symbolizers.
-	return false;
+        // agg renderer doesn't support processing of multiple symbolizers.
+        return false;
     }
 
 private:

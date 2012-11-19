@@ -26,8 +26,8 @@
 #include <mapnik/debug.hpp>
 #include <mapnik/ctrans.hpp>
 #include <mapnik/vertex_converters.hpp>
-#include <mapnik/vector_renderer.hpp>
-#include <mapnik/test_backend.hpp>
+
+#include "vector_renderer.hpp"
 
 // boost
 #include <boost/utility.hpp>
@@ -38,8 +38,8 @@ namespace mapnik
 
 template <typename T>
 vector_renderer<T>::vector_renderer(Map const& m,
-				 T & backend,
-				 double scale_factor)
+                                    T & backend,
+                                    double scale_factor)
     : feature_style_processor<vector_renderer<T> >(m, scale_factor),
       backend_(backend),
       width_(m.width()),
@@ -94,16 +94,15 @@ void vector_renderer<T>::end_style_processing(feature_type_style const& st)
 
 template <typename T>
 void vector_renderer<T>::process(polygon_symbolizer const& sym,
-			      mapnik::feature_impl & feature,
-			      proj_transform const& prj_trans)
+                                 mapnik::feature_impl & feature,
+                                 proj_transform const& prj_trans)
 {
-    std::cerr << "process polygon symbolizer : FIXME" << std::endl;
     agg::trans_affine tr;
     evaluate_transform(tr, feature, sym.get_transform());
     typedef boost::mpl::vector<clip_poly_tag,transform_tag,affine_transform_tag,simplify_tag,smooth_tag> conv_types;
     vertex_converter<box2d<double>, backend_type, polygon_symbolizer,
-		     CoordTransform, proj_transform, agg::trans_affine, conv_types>
-	converter(query_extent_,backend_,sym,t_,prj_trans,tr,scale_factor_);
+                     CoordTransform, proj_transform, agg::trans_affine, conv_types>
+        converter(query_extent_,backend_,sym,t_,prj_trans,tr,scale_factor_);
 
     if (prj_trans.equal() && sym.clip()) converter.template set<clip_poly_tag>(); //optional clip (default: true)
     converter.template set<transform_tag>(); //always transform
@@ -111,13 +110,48 @@ void vector_renderer<T>::process(polygon_symbolizer const& sym,
     if (sym.simplify_tolerance() > 0.0) converter.template set<simplify_tag>(); // optional simplify converter
     if (sym.smooth() > 0.0) converter.template set<smooth_tag>(); // optional smooth converter
 
+    backend_.start_tile_element(feature);
+
     BOOST_FOREACH( geometry_type & geom, feature.paths())
     {
-	if (geom.size() > 2)
-	{
-	    converter.apply(geom);
-	}
+        if (geom.size() > 2)
+        {
+            converter.apply(geom);
+        }
     }
+
+    backend_.stop_tile_element();
+}
+
+template <typename T>
+void vector_renderer<T>::process(line_symbolizer const& sym,
+                                 mapnik::feature_impl & feature,
+                                 proj_transform const& prj_trans)
+{
+    agg::trans_affine tr;
+    evaluate_transform(tr, feature, sym.get_transform());
+    typedef boost::mpl::vector<clip_line_tag,transform_tag,affine_transform_tag,simplify_tag,smooth_tag> conv_types;
+    vertex_converter<box2d<double>, backend_type, line_symbolizer,
+                     CoordTransform, proj_transform, agg::trans_affine, conv_types>
+        converter(query_extent_,backend_,sym,t_,prj_trans,tr,scale_factor_);
+
+    if (prj_trans.equal() && sym.clip()) converter.template set<clip_line_tag>(); //optional clip (default: true)
+    converter.template set<transform_tag>(); //always transform
+    converter.template set<affine_transform_tag>();
+    if (sym.simplify_tolerance() > 0.0) converter.template set<simplify_tag>(); // optional simplify converter
+    if (sym.smooth() > 0.0) converter.template set<smooth_tag>(); // optional smooth converter
+
+    backend_.start_tile_element(feature);
+
+    BOOST_FOREACH( geometry_type & geom, feature.paths())
+    {
+        if (geom.size() > 2)
+        {
+            converter.apply(geom);
+        }
+    }
+
+    backend_.stop_tile_element();
 }
 
 }
