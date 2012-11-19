@@ -15,9 +15,9 @@ lib protobuf-lite : : <name>protobuf-lite <search>$(MAPNIK_DEPS_DIR)/lib ;
 
 exe vector-tile-server
     :
-    main.cpp
-    vector_renderer.cpp
-    tags.cpp
+    ./src/main.cpp
+    ./src/vector_renderer.cpp
+    ./src/tags.cpp
     .//mapnik
     .//icuuc
     .//program_options
