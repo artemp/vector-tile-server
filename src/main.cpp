@@ -79,9 +79,16 @@ int main(int argc, char** argv)
 
     uint32_t bytes = backend.output_vector_tile();
     std::string trimmed = output.substr(0,bytes);
+    char head[4];
+    head[0] = (bytes >> 24) & 0xff;
+    head[1] = (bytes >> 16) & 0xff;
+    head[2] = (bytes >> 8) & 0xff;
+    head[3] = bytes & 0xff;
+
     std::ofstream file("test.osmtile");
     if (file)
     {
+        file.write(head,4);
         file.write(trimmed.c_str(), trimmed.size());
     }
     file.flush();
