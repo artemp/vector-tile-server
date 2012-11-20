@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import sys
 
 def signed(val):
@@ -44,7 +46,7 @@ class vector_tile:
 
     def decodeShortArray(self, numTags):
          bytes = self.decodeVarint32()
-         print>>sys.stderr, "NumTags=", numTags, "BYTES=", bytes
+         print>>sys.stderr, "BYTES=", bytes
          end = self.pos + bytes
          index = []
          while self.pos < end :
@@ -150,8 +152,8 @@ if __name__ == "__main__":
     f = open(sys.argv[1])
     print>>sys.stderr, "openning tile..."
     s = f.read()
-
     tile = vector_tile(bytearray(s))
+    tile.pos = 4
     val = tile.decodeVarint32()
     numTags = 0
     curTag = 0
@@ -161,7 +163,6 @@ if __name__ == "__main__":
         print>>sys.stderr, "POS=", tile.pos, "VAL=", val, "TAG=", tag
         if tag == 1 : # TAG_TILE_NUM_TAGS
             numTags = tile.decodeVarint32()
-
         elif tag == 2 : # TAG_TILE_TAG_KEYS
             index = tile.decodeShortArray(numTags)
             print "INDEX:",index
