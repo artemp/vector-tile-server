@@ -1,0 +1,48 @@
+{
+  "name"          : "node-vector-server",
+  "description"   : "Vector backend for mapnik",
+  "url"           : "http://github.com/mapnik/vector-tile-server",
+  "homepage"      : "http://mapnik.org",
+  "author"        : "Artem Pavlenko (mapnik.org)",
+  "version"       : "0.0.1a",
+  "main"          : "./lib/vector_renderer.js",
+  "bugs"          : {
+    "email" : "artem@mapnik.org",
+    "url"   : "fixme"
+  },
+  "keywords"      : [
+      "map",
+      "graphics",
+      "canvas",
+      "tile",
+      "mapnik",
+      "carto"
+  ],
+  "repository"   :  {
+	   "type" : "git",
+	   "url"  : "fixme"
+  },
+  "contributors"  : ["Artem Pavlenko"],
+  "licenses"      : [
+      {
+	"type": "LGPLv2",
+	"url": "FIXME"
+      }
+  ],
+  "dependencies"  : {},
+  "devDependencies": {
+    "mocha": "*",
+    "jshint"  : "~0.5.x"
+   },
+
+   "directories"  : {
+       "src": "src"
+   },
+  "engines"       : {
+      "node": ">= 0.6.13 && < 0.9.0"
+  },
+  "scripts"       : {
+      "install" : "node-gyp -v configure build",
+      "test"    : "mocha -R spec"
+   }
+}
