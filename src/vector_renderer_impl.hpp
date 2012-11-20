@@ -110,7 +110,7 @@ void vector_renderer<T>::process(polygon_symbolizer const& sym,
     if (sym.simplify_tolerance() > 0.0) converter.template set<simplify_tag>(); // optional simplify converter
     if (sym.smooth() > 0.0) converter.template set<smooth_tag>(); // optional smooth converter
 
-    backend_.start_tile_element(feature);
+    backend_.start_tile_element(feature, Polygon);
 
     BOOST_FOREACH( geometry_type & geom, feature.paths())
     {
@@ -141,7 +141,7 @@ void vector_renderer<T>::process(line_symbolizer const& sym,
     if (sym.simplify_tolerance() > 0.0) converter.template set<simplify_tag>(); // optional simplify converter
     if (sym.smooth() > 0.0) converter.template set<smooth_tag>(); // optional smooth converter
 
-    backend_.start_tile_element(feature);
+    backend_.start_tile_element(feature,LineString);
 
     BOOST_FOREACH( geometry_type & geom, feature.paths())
     {
