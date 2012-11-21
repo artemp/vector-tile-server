@@ -18,6 +18,10 @@ class vector_tile:
         self.buf = buf
         self.pos = 0
 
+    def decodeSize (self):
+        self.pos += 4
+        return self.buf[0] << 24 | self.buf[1] << 16 | self.buf[2] << 8 | self.buf[3]
+
     def decodeVarint32 (self):
         pos = self.pos
         #print>>sys.stderr,"bUFFER=>",self.buf[pos],self.buf[pos+1],self.buf[pos+2],self.buf[pos+3],self.buf[pos+4]
@@ -148,7 +152,7 @@ def parse(filename):
     f = open(filename)
     s = f.read()
     tile = vector_tile(bytearray(s))
-    tile.pos = 4
+    print "content length: ", tile.decodeSize()
     val = tile.decodeVarint32()
     numTags = 0
     curTag = 0
