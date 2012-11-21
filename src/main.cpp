@@ -28,7 +28,7 @@
 #include <mapnik/datasource_cache.hpp>
 #include <mapnik/font_engine_freetype.hpp>
 #include "vector_renderer.hpp"
-#include "dummy_backend.hpp"
+#include "opensciencemap_backend.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -70,8 +70,8 @@ int main(int argc, char** argv)
     }
 
     std::string output;
-    mapnik::dummy_backend backend(output);
-    mapnik::vector_renderer<mapnik::dummy_backend> ren(m, backend);
+    mapnik::opensciencemap_backend backend(output);
+    mapnik::vector_renderer<mapnik::opensciencemap_backend> ren(m, backend);
     ren.apply();
 
     std::cerr << "TILE TAGS SIZE=" << backend.tags().size() << std::endl;

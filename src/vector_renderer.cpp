@@ -23,11 +23,11 @@
 // mapnik
 #include <mapnik/feature_style_processor_impl.hpp>
 #include "vector_renderer_impl.hpp"
-#include "dummy_backend.hpp"
+#include "opensciencemap_backend.hpp"
 #include <mapnik/test_backend.hpp>
 
 namespace mapnik
 {
-template class feature_style_processor<vector_renderer<dummy_backend> >;
-template class vector_renderer<dummy_backend>;
+template class feature_style_processor<vector_renderer<opensciencemap_backend> >;
+template class vector_renderer<opensciencemap_backend>;
 }

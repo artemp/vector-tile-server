@@ -20,8 +20,8 @@
  *
  *****************************************************************************/
 
-#ifndef MAPNIK_DUMMY_BACKEND_HPP
-#define MAPNIK_DUMMY_BACKEND_HPP
+#ifndef MAPNIK_OPENSCIENCEMAP_BACKEND_HPP
+#define MAPNIK_OPENSCIENCEMAP_BACKEND_HPP
 
 // protobuf io
 #include <google/protobuf/io/coded_stream.h>
@@ -81,7 +81,7 @@ struct element_writer
 const static double SCALE = 16.0;
 const static uint32_t TAGS_MAX = 627;
 
-struct dummy_backend
+struct opensciencemap_backend
 {
 private:
     std::vector<tags::tag_type> tags_;
@@ -91,7 +91,7 @@ private:
     google::protobuf::io::StringOutputStream raw_output_;
     google::protobuf::io::CodedOutputStream coded_output_;
 public:
-    explicit dummy_backend(std::string & output)
+    explicit opensciencemap_backend(std::string & output)
         : raw_output_(&output),
           coded_output_(&raw_output_)
     {}
@@ -325,4 +325,4 @@ public:
 };
 }
 
-#endif //MAPNIK_DUMMY_BACKEND_HPP
+#endif //MAPNIK_OPENSCIENCEMAP_BACKEND_HPP

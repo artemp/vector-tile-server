@@ -26,7 +26,7 @@
 
 #include <string>
 #include "vector_renderer.hpp"
-#include "dummy_backend.hpp"
+#include "opensciencemap_backend.hpp"
 
 using namespace v8;
 
@@ -88,8 +88,8 @@ void async_render(uv_work_t* req)
     render_state * state = static_cast<render_state*>(req->data);
     Map * map_ptr = state->m;
     std::string output;
-    mapnik::dummy_backend backend(output);
-    mapnik::vector_renderer<mapnik::dummy_backend> ren(*map_ptr->get(),backend);
+    mapnik::opensciencemap_backend backend(output);
+    mapnik::vector_renderer<mapnik::opensciencemap_backend> ren(*map_ptr->get(),backend);
     ren.apply();
     uint32_t bytes = backend.output_vector_tile();
     state->output = output.substr(0,bytes);
