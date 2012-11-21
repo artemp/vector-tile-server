@@ -30,6 +30,7 @@
       }
   ],
   "dependencies"  : {
+    "generic-pool": "~2.0.0",
     "mapnik" : "https://github.com/mapnik/node-mapnik/archive/master.tar.gz"
   },
   "devDependencies": {

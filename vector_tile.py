@@ -7,6 +7,7 @@ def signed(val):
         return val|~0x7f
     else:
         return val&0x7f
+
 class vector_tile:
 
     TAGS_MAX = 627
@@ -78,7 +79,7 @@ class vector_tile:
             #print "VAL=",val
             if val==0: break
             tag = val >> 3;
-            print>>sys.stderr, "POS=", tile.pos, "VAL=", val, "TAG=", tag
+            print>>sys.stderr, "POS=", self.pos, "VAL=", val, "TAG=", tag
             if tag == 11 : #TAG_ELEM_TAGS
                 print "TAG_ELEM_TAGS"
                 tile.decodeWayTags(index)
@@ -143,14 +144,8 @@ class vector_tile:
                 print "Y => ", last_y/scale
         return count
 
-if __name__ == "__main__":
-
-    if len(sys.argv) != 2 :
-        print>>sys.stderr, "Usage:", sys.argv[0], "<osmtile>"
-        sys.exit(1)
-
-    f = open(sys.argv[1])
-    print>>sys.stderr, "openning tile..."
+def parse(filename):
+    f = open(filename)
     s = f.read()
     tile = vector_tile(bytearray(s))
     tile.pos = 4
@@ -177,3 +172,10 @@ if __name__ == "__main__":
             break
         if (tile.pos < len(s)):
             val = tile.decodeVarint32()
+
+if __name__ == "__main__":
+
+    if len(sys.argv) != 2 :
+        print>>sys.stderr, "Usage:", sys.argv[0], "<osmtile>"
+        sys.exit(1)
+    parse(sys.argv[1])
