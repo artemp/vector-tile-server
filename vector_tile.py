@@ -12,11 +12,12 @@ class vector_tile:
 
     TAGS_MAX = 627
     TAGS_LIMIT = 1024
-    tags = {}
 
     def __init__(self, buf) :
         self.buf = buf
         self.pos = 0
+        self.tags = {}
+        self.ways = []
 
     def decodeSize (self):
         self.pos += 4
@@ -134,6 +135,7 @@ class vector_tile:
         count = 0
         even = True
         scale = 4096/400.0
+        way = []
         while self.pos < end:
             val = self.decodeVarint32()
             val = ((val >> 1) ^ -(val & 1)) #zigzag
@@ -141,11 +143,12 @@ class vector_tile:
             if even :
                 last_x += val
                 even = False
-                print "X => ", last_x/scale
+                way.insert(count,last_y / scale);
             else :
                 last_y += val
                 even = True
-                print "Y => ", last_y/scale
+                way.insert(count,last_y / scale);
+        self.ways.append(way);
         return count
 
 def parse(filename):
