@@ -1,6 +1,27 @@
+/*****************************************************************************
+ *
+ * This file is part of Mapnik (c++ mapping toolkit)
+ *
+ * Copyright (C) 2012 Artem Pavlenko
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ *****************************************************************************/
+
 #include <node.h>
 #include <node_buffer.h>
-//#include <node_object_wrap.h>
 #include "mapnik_map.hpp"
 
 #include <string>
@@ -46,7 +67,7 @@ Handle<Value> render(Arguments const& args)
     Map* m = ObjectWrap::Unwrap<Map>(args[0]->ToObject());
     if (m->active() != 0)
     {
-        // FIXME
+        // TODO
     }
 
     Local<Function> callback = Local<Function>::Cast(args[1]);
