@@ -86,7 +86,7 @@ class vector_tile:
             print>>sys.stderr, "POS=", self.pos, "VAL=", val, "TAG=", tag
             if tag == 11 : #TAG_ELEM_TAGS
                 print "TAG_ELEM_TAGS"
-                tile.decodeWayTags(index)
+                self.decodeWayTags(index)
             elif tag == 1: # TAG_ELEM_NUM_INDICES
                 print "TAG_ELEM_NUM_INDICES"
                 indexCount = self.decodeVarint32();
