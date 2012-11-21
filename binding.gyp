@@ -9,6 +9,9 @@
       ],
       'dependencies': [
       ],
+      'include_dirs': [
+          'node_modules/mapnik/src'
+      ],
       'conditions': [
       ['OS=="mac"', {
         'libraries':[

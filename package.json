@@ -29,7 +29,9 @@
 	"url": "FIXME"
       }
   ],
-  "dependencies"  : {},
+  "dependencies"  : {
+    "mapnik" : "https://github.com/mapnik/node-mapnik/archive/master.tar.gz"
+  },
   "devDependencies": {
     "mocha": "*",
     "jshint"  : "~0.5.x"
