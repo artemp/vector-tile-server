@@ -14,18 +14,45 @@
           '<!@(mapnik-config --cflags | sed s/-I//g)'
       ],
       'conditions': [
-      ['OS=="mac"', {
-        'libraries':[
-          '-lmapnik',
-          '-lprotobuf-lite',
-          '-undefined dynamic_lookup'
-        ],
-         'xcode_settings': {
-         'GCC_ENABLE_CPP_RTTI': 'YES',
-         'GCC_ENABLE_CPP_EXCEPTIONS': 'YES'
-         }
-         }]
-        ]
+        ['OS=="mac"', {
+          'libraries':[
+            '-lmapnik',
+            '-lprotobuf-lite',
+            '-undefined dynamic_lookup'
+          ],
+           'xcode_settings': {
+           'GCC_ENABLE_CPP_RTTI': 'YES',
+           'GCC_ENABLE_CPP_EXCEPTIONS': 'YES'
+           }
+           }]
+      ]
+    },
+    {
+      'target_name': 'vector-tile-server',
+      'type': 'executable',
+      'sources': [
+        './src/main.cpp',
+        './src/vector_renderer.cpp',
+        './src/tags.cpp'
+      ],
+      'include_dirs': [
+          'node_modules/mapnik/src',
+          '<!@(mapnik-config --cflags | sed s/-I//g)'
+      ],
+      'conditions': [
+        ['OS=="mac"', {
+          'libraries':[
+            '-lmapnik',
+            '-lprotobuf-lite',
+            '-undefined dynamic_lookup'
+          ],
+           'xcode_settings': {
+           'GCC_ENABLE_CPP_RTTI': 'YES',
+           'GCC_ENABLE_CPP_EXCEPTIONS': 'YES'
+           }
+           }]
+      ]
     }
+
   ]
 }
