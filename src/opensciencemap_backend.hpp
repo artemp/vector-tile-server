@@ -123,7 +123,6 @@ public:
                 boost::optional<tags::tag_type> tag = tags::tag_value_from_name(name,val.to_string());
                 if ( tag )
                 {
-                    //std::cout << "TAG = " << tag << std::endl;
                     if (*tag < TAGS_MAX)
                     {
                         element_->tags.push_back(*tag);
@@ -136,9 +135,6 @@ public:
                             tags_.push_back(*tag_key);
                             custom_values_.push_back(val.to_string());
                             element_->tags.push_back((1023 + tags_.size()));
-                            //std::cout << "CUSTOM TAG=" <<*tag << " "
-                            //<< name <<  "="  << val.to_string()
-                            //        << " tag_key=" << (tags_.size() + 1023) << std::endl;
                         }
                     }
                 }
