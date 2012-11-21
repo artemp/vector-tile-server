@@ -67,7 +67,8 @@ Handle<Value> render(Arguments const& args)
     Map* m = ObjectWrap::Unwrap<Map>(args[0]->ToObject());
     if (m->active() != 0)
     {
-        // TODO
+        return ThrowException(Exception::TypeError(
+                                  String::New("Use a map pool to avoid sharing map objects between concurrent rendering")));
     }
 
     Local<Function> callback = Local<Function>::Cast(args[1]);
