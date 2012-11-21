@@ -154,4 +154,34 @@ void vector_renderer<T>::process(line_symbolizer const& sym,
     backend_.stop_tile_element();
 }
 
+
+template <typename T>
+void vector_renderer<T>::process(point_symbolizer const& sym,
+                                 mapnik::feature_impl & feature,
+                                 proj_transform const& prj_trans)
+{
+    agg::trans_affine tr;
+    evaluate_transform(tr, feature, sym.get_transform());
+    typedef boost::mpl::vector<transform_tag,affine_transform_tag> conv_types;
+    vertex_converter<box2d<double>, backend_type, point_symbolizer,
+                     CoordTransform, proj_transform, agg::trans_affine, conv_types>
+        converter(query_extent_,backend_,sym,t_,prj_trans,tr,scale_factor_);
+
+
+    converter.template set<transform_tag>(); //always transform
+    converter.template set<affine_transform_tag>();
+
+    backend_.start_tile_element(feature,Point);
+
+    BOOST_FOREACH( geometry_type & geom, feature.paths())
+    {
+        if (geom.size() > 2)
+        {
+            converter.apply(geom);
+        }
+    }
+
+    backend_.stop_tile_element();
+}
+
 }

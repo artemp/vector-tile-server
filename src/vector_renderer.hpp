@@ -64,6 +64,9 @@ public:
                  mapnik::feature_impl & feature,
                  proj_transform const& prj_trans);
 
+    void process(point_symbolizer const& sym,
+                 mapnik::feature_impl & feature,
+                 proj_transform const& prj_trans);
 
     void painted(bool painted) {}
     inline bool process(rule::symbolizers const& /*syms*/,
