@@ -24,7 +24,6 @@
 #include <mapnik/feature_style_processor_impl.hpp>
 #include "vector_renderer_impl.hpp"
 #include "opensciencemap_backend.hpp"
-#include <mapnik/test_backend.hpp>
 
 namespace mapnik
 {
