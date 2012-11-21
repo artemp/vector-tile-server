@@ -10,7 +10,8 @@
       'dependencies': [
       ],
       'include_dirs': [
-          'node_modules/mapnik/src'
+          'node_modules/mapnik/src',
+          '<!@(mapnik-config --cflags | sed s/-I//g)'
       ],
       'conditions': [
       ['OS=="mac"', {
