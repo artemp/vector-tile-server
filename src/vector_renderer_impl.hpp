@@ -145,7 +145,7 @@ void vector_renderer<T>::process(line_symbolizer const& sym,
 
     BOOST_FOREACH( geometry_type & geom, feature.paths())
     {
-        if (geom.size() > 2)
+        if (geom.size() > 1)
         {
             converter.apply(geom);
         }
@@ -175,10 +175,7 @@ void vector_renderer<T>::process(point_symbolizer const& sym,
 
     BOOST_FOREACH( geometry_type & geom, feature.paths())
     {
-        if (geom.size() > 2)
-        {
-            converter.apply(geom);
-        }
+        converter.apply(geom);
     }
 
     backend_.stop_tile_element();
