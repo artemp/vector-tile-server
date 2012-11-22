@@ -67,9 +67,15 @@ struct element_writer
     {
         coded_output_.WriteTag(val);
     }
+
     void write_string(std::string const& str)
     {
         coded_output_.WriteString(str);
+    }
+
+    void write_raw(char const * data, uint32_t size)
+    {
+        coded_output_.WriteRaw(const_cast<char*>(data),size);
     }
 
     uint32_t bytes_written() const
@@ -225,19 +231,18 @@ public:
             coded_output_.WriteRaw(val.data(),val.size());
         }
 
+        // output tile elements
         BOOST_FOREACH(tile_element const& elem, tile_elements_)
         {
-            if (elem.path.empty())
-                continue;
-            if (elem.type == Polygon)
-                coded_output_.WriteTag(0x62);
-            else if (elem.type == LineString)
-                coded_output_.WriteTag(0x5a);
-            else if (elem.type == Point)
-                coded_output_.WriteTag(0x6a);
-
-            if (elem.tags.size() > 0)
+            if (elem.tags.size() > 0 && !elem.path.empty())
             {
+                if (elem.type == Polygon)
+                    coded_output_.WriteTag(0x62);
+                else if (elem.type == LineString)
+                    coded_output_.WriteTag(0x5a);
+                else if (elem.type == Point)
+                    coded_output_.WriteTag(0x6a);
+
                 // ELEMENT
                 std::size_t element_bytes=0;
                 std::string element_buffer;
@@ -250,7 +255,7 @@ public:
                     std::string element_tags;
                     uint32_t tags_bytes = output_short_array(element_tags,elem.tags);
                     writer.write_varint32(tags_bytes);
-                    writer.write_string(element_tags.substr(0,tags_bytes));
+                    writer.write_raw(element_tags.data(), tags_bytes);
                     element_bytes += writer.bytes_written();
                     element_buffer+=tags_buffer.substr(0,writer.bytes_written());
                 }
@@ -258,12 +263,12 @@ public:
                 if (elem.index.size() > 1)
                 {
                     //TAG_ELEM_NUM_INDICES
-                    std::string index_buffer;
-                    element_writer writer(index_buffer);
+                    std::string indices_buffer;
+                    element_writer writer(indices_buffer);
                     writer.write_tag(0x08);
                     writer.write_varint32(elem.index.size());
                     element_bytes += writer.bytes_written();
-                    element_buffer+=index_buffer.substr(0,writer.bytes_written());
+                    element_buffer+=indices_buffer.substr(0,writer.bytes_written());
                 }
 
                 {
@@ -274,7 +279,7 @@ public:
                     std::string array_buffer;
                     uint32_t array_bytes = output_short_array(array_buffer,elem.index);
                     writer.write_varint32(array_bytes);
-                    writer.write_string(array_buffer.substr(0,array_bytes));
+                    writer.write_raw(array_buffer.data(),array_bytes);
                     element_bytes += writer.bytes_written();
                     element_buffer+=index_buffer.substr(0, writer.bytes_written());
                 }
@@ -287,7 +292,7 @@ public:
                     std::string element_paths;
                     uint32_t paths_bytes = output_element_paths(element_paths,elem.path);
                     writer.write_varint32(paths_bytes);
-                    writer.write_string(element_paths.substr(0,paths_bytes));
+                    writer.write_raw(element_paths.data(),paths_bytes);
                     element_bytes += writer.bytes_written();
                     element_buffer+=coord_buffer.substr(0,writer.bytes_written());
                 }
