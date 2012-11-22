@@ -91,20 +91,22 @@ http.createServer(function(req, res) {
                         }
                         else
                         {
-                            var content_length = output.length;
+                            var content_length = output.length + 4;
                             maps.release(stylesheet, map);
+                            var head = new Buffer(4);
+                            head[0] = (output.length >> 24) & 0xff;
+                            head[1] = (output.length >> 16) & 0xff;
+                            head[2] = (output.length >>  8) & 0xff;
+                            head[3] = output.length & 0xff;
                             console.log("TILE(%d/%d/%d) OUTPUT len=%d", params.z, params.x, params.y, output.length);
                             res.useChunkedEncodingByDefault=false;
+                            res.chunkedEncoding=false;
                             res.writeHead(200,{'Content-length': content_length,
                                                'Content-type': 'application/osmtile'
                                               });
-                            var head = new Buffer(4);
-                            head[0] = (content_length >> 24) & 0xff;
-                            head[1] = (content_length >> 16) & 0xff;
-                            head[2] = (content_length >>  8) & 0xff;
-                            head[3] = content_length & 0xff;
                             res.write(head);
                             res.end(output);
+
                         }
                     });
                 }
