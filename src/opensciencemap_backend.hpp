@@ -271,6 +271,7 @@ public:
                     element_buffer+=indices_buffer.substr(0,writer.bytes_written());
                 }
 
+                if (elem.type != Point)
                 {
                     // TAG_ELEM_INDEX
                     std::string index_buffer;
