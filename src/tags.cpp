@@ -147,7 +147,6 @@ static const tag_lookup_type tag_value_lookup = boost::assign::list_of<tag_looku
     (47,"highway=trunk")
     (48,"amenity=place_of_worship")
     (49,"landuse=farmland")
-
     (50,"tracktype=grade1")
     (51,"highway=road")
     (52,"landuse=farm")
