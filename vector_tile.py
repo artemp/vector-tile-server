@@ -25,7 +25,7 @@ class vector_tile:
 
     def decodeVarint32 (self):
         pos = self.pos
-        #print>>sys.stderr,"bUFFER=>",self.buf[pos],self.buf[pos+1],self.buf[pos+2],self.buf[pos+3],self.buf[pos+4]
+        #print>>sys.stderr,pos #"BUFFER=>",self.buf[pos],self.buf[pos+1],self.buf[pos+2],self.buf[pos+3],self.buf[pos+4]
         if signed(self.buf[pos]) >= 0:
             self.pos +=1
             return self.buf[pos]
@@ -84,7 +84,7 @@ class vector_tile:
             #print "VAL=",val
             if val==0: break
             tag = val >> 3;
-            print>>sys.stderr, "POS=", self.pos, "VAL=", val, "TAG=", tag
+            #print>>sys.stderr, "POS=", self.pos, "VAL=", val, "TAG=", tag
             if tag == 11 : #TAG_ELEM_TAGS
                 print "TAG_ELEM_TAGS"
                 self.decodeWayTags(index)
@@ -129,6 +129,7 @@ class vector_tile:
 
     def decodeWayCoordinates(self, nodes ):
         bytes = self.decodeVarint32()
+        print>>sys.stderr,"BYTES=",bytes," pos=",self.pos
         end = self.pos + bytes
         last_x = 0
         last_y = 0
@@ -144,10 +145,13 @@ class vector_tile:
                 last_x += val
                 even = False
                 way.insert(count,last_y / scale);
+                print>>sys.stderr, "X=", last_x
             else :
                 last_y += val
                 even = True
                 way.insert(count,last_y / scale);
+                print>>sys.stderr, "Y=", last_y
+        print "TILE pos=",self.pos," end=", end
         self.ways.append(way);
         return count
 
@@ -171,8 +175,14 @@ def parse(filename):
         elif tag == 3 : # TAG_TILE_TAG_VALUES:
             tile.decodeTileTags(curTag,index);
             curTag += 1
-        elif tag == 11 or tag == 12 or tag == 13 : # TAG_TILE_LINE/POLY/POINT
-            print " TAG_TILE_LINE/POLY/POINT"
+        elif tag == 11 : # TAG_TILE_LINE
+            print "======== TAG_TILE_LINE"
+            tile.decodeTileElement(tag, index);
+        elif tag == 12 : # TAG_TILE_POLY
+            print "======== TAG_TILE_POLY"
+            tile.decodeTileElement(tag, index);
+        elif tag == 13 : # TAG_TILE_POINT
+            print "======== TAG_TILE_POINT"
             tile.decodeTileElement(tag, index);
         else:
             print>>sys.stderr,"Invalid type for tile:", tag
