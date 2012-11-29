@@ -29,6 +29,7 @@
 #include <mapnik/font_engine_freetype.hpp>
 #include "vector_renderer.hpp"
 #include "opensciencemap_backend.hpp"
+#include "opensciencemap_backend_pbf.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -57,7 +58,7 @@ int main(int argc, char** argv)
         //m.zoom_to_box(mapnik::box2d<double>(-141233.598318,6756305.73374,-140782.086463,6756728.00478));
 
         //mapnik::box2d<double> bbox(-141233.598318,6755505.73374,-140782.086463,6756728.00478);
-        //mapnik::box2d<double> bbox(-141233.598318 + 1000,6755505.73374 + 1000,-140782.086463+1000,6756728.00478+1000);
+//mapnik::box2d<double> bbox(-141233.598318 + 1000,6755505.73374 + 1000,-140782.086463+1000,6756728.00478+1000);
         mapnik::box2d<double> bbox(-141867.12449728712,6760702.277767269,-141255.62827100573,6761313.773993552);
         m.zoom_to_box(mapnik::box2d<double>(bbox));
 
@@ -70,8 +71,8 @@ int main(int argc, char** argv)
     }
 
     std::string output;
-    mapnik::opensciencemap_backend backend(output);
-    mapnik::vector_renderer<mapnik::opensciencemap_backend> ren(m, backend);
+    mapnik::opensciencemap_backend_pbf backend(output);
+    mapnik::vector_renderer<mapnik::opensciencemap_backend_pbf> ren(m, backend);
     ren.apply();
 
     std::cerr << "TILE TAGS SIZE=" << backend.tags().size() << std::endl;

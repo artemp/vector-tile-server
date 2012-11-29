@@ -24,9 +24,12 @@
 #include <mapnik/feature_style_processor_impl.hpp>
 #include "vector_renderer_impl.hpp"
 #include "opensciencemap_backend.hpp"
+#include "opensciencemap_backend_pbf.hpp"
 
 namespace mapnik
 {
 template class feature_style_processor<vector_renderer<opensciencemap_backend> >;
 template class vector_renderer<opensciencemap_backend>;
+template class feature_style_processor<vector_renderer<opensciencemap_backend_pbf> >;
+template class vector_renderer<opensciencemap_backend_pbf>;
 }

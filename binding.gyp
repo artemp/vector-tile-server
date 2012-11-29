@@ -5,7 +5,8 @@
       'sources': [
         'src/vector_server.cpp',
         'src/tags.cpp',
-        'src/vector_renderer.cpp'
+        'src/vector_renderer.cpp',
+        'src/TileData.pb.cc'
       ],
       'dependencies': [
       ],
@@ -17,7 +18,7 @@
         ['OS=="mac"', {
           'libraries':[
             '-lmapnik',
-            '-lprotobuf-lite',
+            '-lprotobuf',
             '-undefined dynamic_lookup'
           ],
            'xcode_settings': {
@@ -33,7 +34,8 @@
       'sources': [
         './src/main.cpp',
         './src/vector_renderer.cpp',
-        './src/tags.cpp'
+        './src/tags.cpp',
+        'src/TileData.pb.cc'
       ],
       'include_dirs': [
           'node_modules/mapnik/src',
@@ -43,7 +45,7 @@
         ['OS=="mac"', {
           'libraries':[
             '-lmapnik',
-            '-lprotobuf-lite',
+            '-lprotobuf',
             '-undefined dynamic_lookup'
           ],
            'xcode_settings': {

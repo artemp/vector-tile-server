@@ -11,19 +11,20 @@ lib system : : <name>boost_system <search>$(BOOST_DIR)/lib ;
 lib regex : : <name>boost_regex <search>$(BOOST_DIR)/lib ;
 lib sqlite3 : : <name>sqlite3 <search>$(MAPNIK_DIR)/lib ;
 lib icuuc : : <name>icuuc <search>$(MAPNIK_DEPS_DIR)/lib ;
-lib protobuf-lite : : <name>protobuf-lite <search>$(MAPNIK_DEPS_DIR)/lib ;
+lib protobuf : : <name>protobuf <search>$(MAPNIK_DEPS_DIR)/lib ;
 
 exe vector-tile-server
     :
     ./src/main.cpp
     ./src/vector_renderer.cpp
     ./src/tags.cpp
+    ./src/TileData.pb.cc
     .//mapnik
     .//icuuc
     .//program_options
     .//regex
     .//system
-    .//protobuf-lite
+    .//protobuf
     :
     <include>$(BOOST_DIR)/include
     <include>$(MAPNIK_DIR)/include
