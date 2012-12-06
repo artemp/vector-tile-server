@@ -38,6 +38,15 @@ Vector tile server and rendering backend for Mapnik
 
 3) Build mapnik and install protobuf
 
+Install Mapnik like:
+
+    git clone git://github.com/mapnik/mapnik.git
+    cd mapnik && ./configure && make && make install
+
+On ubuntu get protobuf:
+
+    sudo apt-get install libprotobuf7 protobuf-compiler
+    
 2) Then within this directory do:
 
     protoc -Iproto/ --cpp_out=src/ proto/TileData.proto
