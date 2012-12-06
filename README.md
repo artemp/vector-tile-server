@@ -62,6 +62,7 @@ If you get an error like `cannot run in wd` then try:
 ## Running server
 
 ```bash
+export LD_PRELOAD=./node_modules/mapnik/lib/_mapnik.node
 node ./server.js osm_vectors.xml 8000
 ```
 
