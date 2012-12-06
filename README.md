@@ -64,3 +64,40 @@ If you get an error like `cannot run in wd` then try:
 ```bash
 node ./server.js osm_vectors.xml 8000
 ```
+
+
+## Troubleshooting
+
+You will notice if you try to require just the vector_server
+node module you will get an odd symbol error:
+
+```sh
+$ node
+> require('./lib/vector_server');
+Error: dlopen(/Users/dane/projects/vector-tile-server/build/Release/node_vector_server.node, 1): Symbol not found: __ZN3Map11constructorE
+  Referenced from: /Users/dane/projects/vector-tile-server/build/Release/node_vector_server.node
+  Expected in: dynamic lookup
+
+    at Object.Module._extensions..node (module.js:485:11)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Module.require (module.js:362:17)
+    at require (module.js:378:17)
+    at Object.<anonymous> (/Users/dane/projects/vector-tile-server/lib/vector_server.js:1:103)
+    at Module._compile (module.js:449:26)
+    at Object.Module._extensions..js (module.js:467:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+```
+
+The reason for this is that the node-mapnik module symbols need to be available for
+the `node_vector_server.node` code to initialize properly. So, to solve this make sure
+to first require node-mapnik. This works:
+
+```
+$ node
+> var mapnik = require('mapnik')
+undefined
+> require('./lib/vector_server');
+{ render: [Function] }
+```
