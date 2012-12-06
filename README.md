@@ -45,12 +45,18 @@ Install Mapnik like:
 
 On ubuntu get protobuf:
 
-    sudo apt-get install libprotobuf7 protobuf-compiler
+    sudo apt-get install libprotobuf7 libprotobuf-dev protobuf-compiler
     
 2) Then within this directory do:
 
     protoc -Iproto/ --cpp_out=src/ proto/TileData.proto
     npm install
+
+
+If you get an error like `cannot run in wd` then try:
+
+   npm install node-gyp -g
+   node-gyp -v configure build
 
 
 ## Running server
