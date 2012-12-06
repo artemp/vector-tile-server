@@ -19,15 +19,15 @@ var usage = 'usage: server.js <stylesheet> <port>';
 var stylesheet = process.argv[2];
 
 if (!stylesheet) {
-   console.log(usage);
-   process.exit(1);
+    console.log(usage);
+    process.exit(1);
 }
 
 var port = process.argv[3];
 
 if (!port) {
-   console.log(usage);
-   process.exit(1);
+    console.log(usage);
+    process.exit(1);
 }
 
 var aquire = function(id,options,callback) {
@@ -46,7 +46,7 @@ var aquire = function(id,options,callback) {
         }
     };
     maps.acquire(id,methods,function(err,obj) {
-      callback(err, obj);
+        callback(err, obj);
     });
 };
 
@@ -55,7 +55,7 @@ http.createServer(function(req, res) {
     parseXYZ(req, TMS_SCHEME, function(err,params) {
         if (err) {
             res.writeHead(500, {
-              'Content-Type': 'text/plain'
+                'Content-Type': 'text/plain'
             });
             res.end(err.message);
         }
@@ -70,7 +70,7 @@ http.createServer(function(req, res) {
                         maps.release(stylesheet, map);
                     });
                     res.writeHead(500, {
-                      'Content-Type': 'text/plain'
+                        'Content-Type': 'text/plain'
                     });
                     res.end(err.message);
                 }
@@ -79,11 +79,11 @@ http.createServer(function(req, res) {
                     // bbox for x,y,z
                     map.extent = bbox;
                     vector_ren.render(map, function(err, output) {
+                        process.nextTick(function() {
+                            maps.release(stylesheet, map);
+                        });
                         if (err)
                         {
-                            process.nextTick(function() {
-                                maps.release(stylesheet, map);
-                            });
                             res.writeHead(500, {
                                 'Content-Type': 'text/plain'
                             });
@@ -92,7 +92,6 @@ http.createServer(function(req, res) {
                         else
                         {
                             var content_length = output.length + 4;
-                            maps.release(stylesheet, map);
                             var head = new Buffer(4);
                             head[0] = (output.length >> 24) & 0xff;
                             head[1] = (output.length >> 16) & 0xff;
