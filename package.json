@@ -31,7 +31,9 @@
   ],
   "dependencies"  : {
     "generic-pool": "~2.0.0",
-    "mapnik" : "~0.7.17"
+    "mapnik" : "~0.7.17",
+    "sphericalmercator": "~1.0.2",
+    "eio"         : "~0.1.0"
   },
   "devDependencies": {
     "mocha": "*",
