@@ -56,7 +56,13 @@ On ubuntu get protobuf:
 If you get an error like `cannot run in wd` then try:
 
    npm install node-gyp -g
-   node-gyp -v configure build
+   node-gyp configure build
+
+### Debug version
+
+To build a debug version do:
+
+    node-gyp configure build -d
 
 
 ## Running server
