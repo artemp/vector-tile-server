@@ -16,20 +16,25 @@ var mime = require('mime');
 var threads = Math.ceil(Math.max(4, require('os').cpus().length * 1.5));
 eio.setMinParallel(threads);
 
-var usage = 'usage: server.js <stylesheet> <port>';
+var root = "./www";
+var port = '8000';
+var stylesheet = 'osm_vectors.xml';
 
-var stylesheet = process.argv[2];
+var usage = 'usage: node server.js [stylesheet] [port] [root]';
+usage += '\n  default stylesheet: ' + stylesheet;
+usage += '\n  default port: ' + port;
+usage += '\n  default root directory: ' + root;
 
-if (!stylesheet) {
-    console.log(usage);
-    process.exit(1);
+if (process.argv[2]) {
+    stylesheet = process.argv[2];
 }
 
-var port = process.argv[3];
+if (process.argv[3]) {
+    port = process.argv[3];
+}
 
-if (!port) {
-    console.log(usage);
-    process.exit(1);
+if (process.argv[4]) {
+    root = process.argv[4];
 }
 
 var map_pool = pool({
@@ -128,8 +133,6 @@ var renderer = function(map, params, res) {
     }
 };
 
-var root = "./www";
-
 http.createServer(function(req, res) {
     var uri = url.parse(req.url).pathname;
     if (!uri || uri == '/') {
@@ -156,4 +159,4 @@ http.createServer(function(req, res) {
     });
 }).listen(port);
 
-console.log('Vector tile server listening on port %d', port);
+console.log('Vector tile server listening on port %d | directory %s', port, root);
