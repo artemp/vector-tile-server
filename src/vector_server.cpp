@@ -53,7 +53,14 @@ Handle<Value> render(Arguments const& args)
                                   String::New("requires at least two arguments, a renderable mapnik object, and a callback")));
     }
 
-    if (!Map::constructor->HasInstance(args[0]->ToObject()))
+    if (!args[0]->IsObject())
+    {
+        return ThrowException(Exception::TypeError(
+                                  String::New("First argument must be a Map object")));
+    }
+
+    Local<Object> obj = args[0]->ToObject();
+    if (obj->IsNull() || obj->IsUndefined() || !Map::constructor->HasInstance(obj->ToObject()))
     {
         return ThrowException(Exception::TypeError(
                                   String::New("First argument must be a Map object")));
