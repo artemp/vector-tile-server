@@ -30,14 +30,11 @@ if (!port) {
     process.exit(1);
 }
 
-var aquire = function(id,options,callback) {
+var aquire = function(id,callback) {
     methods = {
         create: function(cb) {
-            var obj = new mapnik.Map(options.width || 256, options.height || 256);
+            var obj = new mapnik.Map(256, 256);
             obj.load(id, {strict: true},function(err,obj) {
-                if (options.bufferSize) {
-                    obj.bufferSize = options.bufferSize;
-                }
                 cb(err,obj);
             });
         },
@@ -61,9 +58,7 @@ http.createServer(function(req, res) {
         }
         else
         {
-            var bbox = mercator.xyz_to_envelope(params.x, params.y, params.z, TMS_SCHEME);
-            console.log('BBOX %s', bbox);
-            aquire(stylesheet, {}, function(err, map) {
+            aquire(stylesheet, function(err, map) {
                 if (err)
                 {
                     process.nextTick(function() {
@@ -76,8 +71,6 @@ http.createServer(function(req, res) {
                 }
                 else
                 {
-                    // bbox for x,y,z
-                    map.extent = bbox;
                     vector_ren.render(map, function(err, output) {
                         process.nextTick(function() {
                             maps.release(stylesheet, map);
@@ -91,6 +84,9 @@ http.createServer(function(req, res) {
                         }
                         else
                         {
+                            var bbox = mercator.xyz_to_envelope(params.x, params.y, params.z, TMS_SCHEME);
+                            console.log('BBOX %s', bbox);
+                            map.extent = bbox;
                             var content_length = output.length + 4;
                             var head = new Buffer(4);
                             head[0] = (output.length >> 24) & 0xff;
