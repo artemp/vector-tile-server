@@ -19,7 +19,7 @@
           'libraries':[
             '-lmapnik',
             '-lprotobuf'
-          ],
+          ]
         }],
         ['OS=="linux"', {
           'libraries':[
@@ -29,7 +29,14 @@
             # mapnik uses by uncommenting the next line
             #'<!@(mapnik-config --ldflags --dep-libs)'
           ]
-        }]
+        }],
+        ['OS=="mac"', {
+           'xcode_settings': {
+             'OTHER_CPLUSPLUSFLAGS':[
+                 '<!@(mapnik-config --cflags)'
+              ],
+           }
+        }],
       ],
       'sources': [
         './src/tags.cpp',
@@ -42,14 +49,26 @@
       'target_name': 'node_vector_server',
       'sources': [
         './src/vector_server.cpp',
-      ]
+      ],
+      # this has to be per target to correctly
+      # override node-gyp defaults
+      'xcode_settings': {
+       'GCC_ENABLE_CPP_RTTI': 'YES',
+       'GCC_ENABLE_CPP_EXCEPTIONS': 'YES'
+      }
     },
     {
       'target_name': 'vector-tile-server',
       'type': 'executable',
       'sources': [
         './src/main.cpp',
-      ]
-    }
+      ],
+      # this has to be per target to correctly
+      # override node-gyp defaults
+      'xcode_settings': {
+       'GCC_ENABLE_CPP_RTTI': 'YES',
+       'GCC_ENABLE_CPP_EXCEPTIONS': 'YES'
+      }
+    },
   ]
 }
