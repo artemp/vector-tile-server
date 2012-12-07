@@ -130,10 +130,25 @@ void vector_renderer<T>::process(line_symbolizer const& sym,
 {
     agg::trans_affine tr;
     evaluate_transform(tr, feature, sym.get_transform());
+
+    box2d<double> clipping_extent = query_extent_;
+    if (sym.clip())
+    {
+        double padding = (double)(query_extent_.width()/width_);
+        padding *= 4;
+        if (fabs(sym.offset()) > 0)
+            padding *= fabs(sym.offset()) * 1.2;
+        double x0 = query_extent_.minx();
+        double y0 = query_extent_.miny();
+        double x1 = query_extent_.maxx();
+        double y1 = query_extent_.maxy();
+        clipping_extent.init(x0 - padding, y0 - padding, x1 + padding , y1 + padding);
+    }
+
     typedef boost::mpl::vector<clip_line_tag,transform_tag,affine_transform_tag,simplify_tag,smooth_tag> conv_types;
     vertex_converter<box2d<double>, backend_type, line_symbolizer,
                      CoordTransform, proj_transform, agg::trans_affine, conv_types>
-        converter(query_extent_,backend_,sym,t_,prj_trans,tr,scale_factor_);
+        converter(clipping_extent,backend_,sym,t_,prj_trans,tr,scale_factor_);
 
     if (prj_trans.equal() && sym.clip()) converter.template set<clip_line_tag>(); //optional clip (default: true)
     converter.template set<transform_tag>(); //always transform
