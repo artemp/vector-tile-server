@@ -5,9 +5,12 @@ var mapnik = require('mapnik');
 var mercator = new(require('sphericalmercator'));
 var pool = require('generic-pool').Pool;
 var http = require('http');
+var url = require("url");
 var vector_ren = require('./lib/vector_server');
 var eio = require('eio');
 var path = require('path');
+var exists = require('fs').exists || require('path').exists;
+var mime = require('mime');
 
 // Increase number of threads to 1.5x the number of logical CPUs.
 var threads = Math.ceil(Math.max(4, require('os').cpus().length * 1.5));
@@ -45,15 +48,15 @@ var map_pool = pool({
 });
 
 var parse_url = function(req, callback) {
-    var format = path.extname(req.url);
     var matches = req.url.match(/(\d+)/g);
-    if (!format || !(format.indexOf('png') > -1 || format == '.osmtile')) {
-        var msg = "Invalid format, only 'png' and 'osmtile' are supported";
-        msg += ' (expected a url like /0/0/0.png or /0/0/0.osmtile';
-        msg += ' but got: ' + req.url + ')';
-        return callback(new Error(msg));
-    }
     if (matches && matches.length == 3) {
+        var format = path.extname(req.url);
+        if (!format || !(format.indexOf('png') > -1 || format == '.osmtile')) {
+            var msg = "Invalid format, only 'png' and 'osmtile' are supported";
+            msg += ' (expected a url like /0/0/0.png or /0/0/0.osmtile';
+            msg += ' but got: ' + req.url + ')';
+            return callback(new Error(msg));
+        }
         try {
             var x = parseInt(matches[1], 10);
             var y = parseInt(matches[2], 10);
@@ -68,6 +71,7 @@ var parse_url = function(req, callback) {
             return callback(err, null);
         }
     }
+    return callback(new Error('not a tile'),null);
 }
 
 var error = function(res,msg) {
@@ -124,16 +128,30 @@ var renderer = function(map, params, res) {
     }
 };
 
+var root = "./www";
+
 http.createServer(function(req, res) {
-    parse_url(req, function(err,params) {
-        if (err) {
-            return error(res,err.message)
+    var uri = url.parse(req.url).pathname;
+    if (!uri || uri == '/') {
+        res.writeHead(200, {'Content-Type': 'text/html'});
+        return res.end(fs.readFileSync(path.join(root,'index.html')));
+    }
+    var filepath = path.join(root, uri);
+    exists(filepath, function(exist) {
+        if (exist) {
+            res.writeHead(200, {'Content-Type': mime.lookup(filepath)});
+            return res.end(fs.readFileSync(filepath));
         }
-        map_pool.acquire(function(err, map) {
+        parse_url(req, function(err,params) {
             if (err) {
-                return error(res,err.message)
+                return error(res,err.message);
             }
-            return renderer(map,params,res);
+            map_pool.acquire(function(err, map) {
+                if (err) {
+                    return error(res,err.message)
+                }
+                return renderer(map,params,res);
+            });
         });
     });
 }).listen(port);
