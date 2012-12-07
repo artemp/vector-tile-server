@@ -19,14 +19,14 @@
       "carto"
   ],
   "repository"   :  {
-	   "type" : "git",
-	   "url"  : "fixme"
+     "type" : "git",
+     "url"  : "fixme"
   },
   "contributors"  : ["Artem Pavlenko"],
   "licenses"      : [
       {
-	"type": "LGPLv2",
-	"url": "FIXME"
+        "type": "LGPLv2",
+        "url": "FIXME"
       }
   ],
   "dependencies"  : {
