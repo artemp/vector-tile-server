@@ -21,19 +21,19 @@ Vector tile server and rendering backend for Mapnik
 --- a/include/mapnik/feature_style_processor_impl.hpp
 +++ b/include/mapnik/feature_style_processor_impl.hpp
 @@ -388,6 +388,13 @@ void feature_style_processor<Processor>::apply_to_layer(layer const& lay, Proces
-             q.add_property_name(name);
-         }
+             q.add_property_name(name);
+         }
  
-+        // FIXME: make user config
-+        layer_descriptor lay_desc = ds->get_descriptor();
-+        BOOST_FOREACH(attribute_descriptor const& desc, lay_desc.get_descriptors())
-+        {
-+            q.add_property_name(desc.get_name());
-+        }
++        // FIXME: make user config
++        layer_descriptor lay_desc = ds->get_descriptor();
++        BOOST_FOREACH(attribute_descriptor const& desc, lay_desc.get_descriptors())
++        {
++            q.add_property_name(desc.get_name());
++        }
 +
-         // Update filter_factor for all enabled raster layers.
-         BOOST_FOREACH (feature_type_style * style, active_styles)
-         {
+         // Update filter_factor for all enabled raster layers.
+         BOOST_FOREACH (feature_type_style * style, active_styles)
+         {
 ```
 
 3) Build mapnik and install protobuf
@@ -63,6 +63,8 @@ If you get an error like `cannot run in wd` then try:
 To build a debug version do:
 
     node-gyp configure build -d
+
+Then edit the file `lib/vector_server.js` so that the Debug modules is used.
 
 
 ## Running server
