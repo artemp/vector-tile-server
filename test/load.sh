@@ -1,0 +1,1 @@
+node server.js osm_vectors.xml 8000 & PID=$!; sleep 2; siege  "http://localhost:8000/0/0/0.osmtile"; sleep 5; kill $PID
