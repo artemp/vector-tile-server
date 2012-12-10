@@ -126,7 +126,7 @@ public:
             mapnik::value const& val = boost::get<1>(*itr);
             if (!val.is_null())
             {
-                boost::optional<tags::tag_type> tag = tags::tag_value_from_name(name,val.to_string());
+                boost::optional<tags::tag_type> tag = tags::tag_index_from_kv(name,val.to_string());
                 if ( tag )
                 {
                     if (*tag < TAGS_MAX)
