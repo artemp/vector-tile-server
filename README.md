@@ -77,6 +77,23 @@ node ./server.js osm_vectors.xml 8000
 
 ## Troubleshooting
 
+### symbol conflicts
+
+If you hit an error like:
+
+```
+libprotobuf ERROR google/protobuf/descriptor_database.cc:109] Symbol name "google.protobuf.span" conflicts with the existing symbol "google.protobuf.span".
+libprotobuf FATAL google/protobuf/descriptor.cc:862] CHECK failed: generated_database_->Add(encoded_file_descriptor, size):
+```
+
+This indicates that libprotobuf has been linked twice. See:
+
+ - http://code.google.com/p/protobuf/issues/detail?id=128
+ - http://code.google.com/p/protobuf/issues/detail?id=370
+
+
+### symbols not found
+
 You will notice if you try to require just the vector_server
 node module you will get an odd symbol error:
 
