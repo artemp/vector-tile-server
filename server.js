@@ -67,11 +67,11 @@ var parse_url = function(req, callback) {
             var y = parseInt(matches[2], 10);
             var z = parseInt(matches[0], 10);
             return callback(null,
-               { z: z,
-                 x: x,
-                 y: y,
-                 format: format.slice(1)
-               });
+                            { z: z,
+                              x: x,
+                              y: y,
+                              format: format.slice(1)
+                            });
         } catch (err) {
             return callback(err, null);
         }
@@ -89,7 +89,6 @@ var error = function(res,msg) {
 var renderer = function(map, params, res) {
     var bbox = mercator.bbox(params.x, params.y, params.z, false, '900913');
     map.extent = bbox;
-    console.log(bbox);
     if (params.format == 'osmtile') {
         vector_ren.render(map, function(err, output) {
             process.nextTick(function() {
