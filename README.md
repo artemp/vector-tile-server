@@ -62,7 +62,7 @@ If you get an error like `cannot run in wd` then try:
 
 To build a debug version do:
 
-    node-gyp configure build -d
+    node-gyp configure build -v -d
 
 Then edit the file `lib/vector_server.js` so that the Debug modules is used.
 

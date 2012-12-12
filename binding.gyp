@@ -3,7 +3,10 @@
       'default_configuration': 'Release',
       'configurations': {
           'Debug': {
-              'cflags_cc!': ['-O3', '-DNDEBUG']
+              'cflags_cc!': ['-O3', '-DNDEBUG'],
+              'xcode_settings': {
+                'OTHER_CPLUSPLUSFLAGS!':['-O3', '-DNDEBUG']
+              }
           },
           'Release': {
              # nothing needed, use defaults
