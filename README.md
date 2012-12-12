@@ -91,6 +91,18 @@ This indicates that libprotobuf has been linked twice. See:
  - http://code.google.com/p/protobuf/issues/detail?id=128
  - http://code.google.com/p/protobuf/issues/detail?id=370
 
+A crash like below may also indicate this problem:
+
+```
+Thread 2 Crashed:
+0   libsystem_kernel.dylib        	0x00007fff8926ece2 __pthread_kill + 10
+1   libsystem_c.dylib             	0x00007fff86f9a7d2 pthread_kill + 95
+2   libsystem_c.dylib             	0x00007fff86f8ba7a abort + 143
+3   libsystem_c.dylib             	0x00007fff86fea84c free + 389
+4   libprotobuf.7.dylib           	0x0000000105ea3d19 google::protobuf::RepeatedField<unsigned int>::Add(unsigned int const&) + 33
+5   node_vector_server.node       	0x000000010d1ac90b mapnik::opensciencemap_backend_pbf::output_vector_tile() + 857 (opensciencemap_backend_pbf.hpp:238)
+6   node_vector_server.node       	0x000000010d1ac240 async_render(uv_work_s*) + 273 (vector_server.cpp:103)
+```
 
 ### symbols not found
 
