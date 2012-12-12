@@ -30,13 +30,6 @@
             #'<!@(mapnik-config --ldflags --dep-libs)'
           ]
         }],
-        ['OS=="mac"', {
-           'xcode_settings': {
-             'OTHER_CPLUSPLUSFLAGS':[
-                 '<!@(mapnik-config --cflags)'
-              ],
-           }
-        }],
       ],
       'sources': [
         './src/tags.cpp',
@@ -53,8 +46,11 @@
       # this has to be per target to correctly
       # override node-gyp defaults
       'xcode_settings': {
-       'GCC_ENABLE_CPP_RTTI': 'YES',
-       'GCC_ENABLE_CPP_EXCEPTIONS': 'YES'
+        'OTHER_CPLUSPLUSFLAGS':[
+           '<!@(mapnik-config --cflags)'
+        ],
+        'GCC_ENABLE_CPP_RTTI': 'YES',
+        'GCC_ENABLE_CPP_EXCEPTIONS': 'YES'
       }
     },
     {
@@ -66,8 +62,11 @@
       # this has to be per target to correctly
       # override node-gyp defaults
       'xcode_settings': {
-       'GCC_ENABLE_CPP_RTTI': 'YES',
-       'GCC_ENABLE_CPP_EXCEPTIONS': 'YES'
+        'OTHER_CPLUSPLUSFLAGS':[
+           '<!@(mapnik-config --cflags)'
+        ],
+        'GCC_ENABLE_CPP_RTTI': 'YES',
+        'GCC_ENABLE_CPP_EXCEPTIONS': 'YES'
       }
     },
   ]
