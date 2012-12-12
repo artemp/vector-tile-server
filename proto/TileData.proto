@@ -3,7 +3,7 @@
 package org.oscim.database.oscimap;
 
 //option java_package = "org.oscimap.database.pbmap";
-//option optimize_for = LITE_RUNTIME;
+option optimize_for = LITE_RUNTIME;
 
 message Data {
         message Element {

@@ -18,7 +18,7 @@
           'cflags_cc' : ['<!@(mapnik-config --cflags)'],
           'libraries':[
             '-lmapnik',
-            '-lprotobuf'
+            '-lprotobuf-lite'
           ]
         }],
         ['OS=="linux"', {
