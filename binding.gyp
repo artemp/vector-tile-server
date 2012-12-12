@@ -20,7 +20,7 @@
           'cflags_cc!': ['-fno-rtti', '-fno-exceptions'],
           'cflags_cc' : ['<!@(mapnik-config --cflags)'],
           'libraries':[
-            '-lmapnik',
+            '<!@(mapnik-config --libs)', # will bring in -lmapnik and the -L to point to it
             '-lprotobuf-lite'
           ]
         }],
