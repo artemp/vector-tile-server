@@ -31,6 +31,7 @@ namespace mapnik { namespace tags {
     typedef uint32_t tag_type;
     typedef std::string name_type;
     boost::optional<tag_type> tag_from_name(name_type const& name);
+    boost::optional<std::string> name_from_tag(tag_type tag);
     boost::optional<tag_type> tag_index_from_kv(name_type const& name, std::string const& val);
     boost::optional<std::pair<std::string,std::string> > kv_from_tag(tag_type tag);
 }}
