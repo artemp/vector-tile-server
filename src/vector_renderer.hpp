@@ -77,6 +77,11 @@ public:
         return false;
     }
 
+    inline eAttributeCollectionPolicy attribute_collection_policy() const
+    {
+        return COLLECT_ALL;
+    }
+
 private:
     backend_type & backend_;
     unsigned width_;
