@@ -3,7 +3,10 @@
       'default_configuration': 'Release',
       'configurations': {
           'Debug': {
-              'cflags_cc!': ['-O3', '-DNDEBUG']
+              'cflags_cc!': ['-O3', '-DNDEBUG'],
+              'xcode_settings': {
+                'OTHER_CPLUSPLUSFLAGS!':['-O3', '-DNDEBUG']
+              }
           },
           'Release': {
              # nothing needed, use defaults
@@ -17,7 +20,7 @@
           'cflags_cc!': ['-fno-rtti', '-fno-exceptions'],
           'cflags_cc' : ['<!@(mapnik-config --cflags)'],
           'libraries':[
-            '-lmapnik',
+            '<!@(mapnik-config --libs)', # will bring in -lmapnik and the -L to point to it
             '-lprotobuf-lite'
           ]
         }],
@@ -29,13 +32,6 @@
             # mapnik uses by uncommenting the next line
             #'<!@(mapnik-config --ldflags --dep-libs)'
           ]
-        }],
-        ['OS=="mac"', {
-           'xcode_settings': {
-             'OTHER_CPLUSPLUSFLAGS':[
-                 '<!@(mapnik-config --cflags)'
-              ],
-           }
         }],
       ],
       'sources': [
@@ -53,8 +49,11 @@
       # this has to be per target to correctly
       # override node-gyp defaults
       'xcode_settings': {
-       'GCC_ENABLE_CPP_RTTI': 'YES',
-       'GCC_ENABLE_CPP_EXCEPTIONS': 'YES'
+        'OTHER_CPLUSPLUSFLAGS':[
+           '<!@(mapnik-config --cflags)'
+        ],
+        'GCC_ENABLE_CPP_RTTI': 'YES',
+        'GCC_ENABLE_CPP_EXCEPTIONS': 'YES'
       }
     },
     {
@@ -66,8 +65,11 @@
       # this has to be per target to correctly
       # override node-gyp defaults
       'xcode_settings': {
-       'GCC_ENABLE_CPP_RTTI': 'YES',
-       'GCC_ENABLE_CPP_EXCEPTIONS': 'YES'
+        'OTHER_CPLUSPLUSFLAGS':[
+           '<!@(mapnik-config --cflags)'
+        ],
+        'GCC_ENABLE_CPP_RTTI': 'YES',
+        'GCC_ENABLE_CPP_EXCEPTIONS': 'YES'
       }
     },
   ]
