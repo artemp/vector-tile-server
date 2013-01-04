@@ -13,28 +13,7 @@ Vector tile server and rendering backend for Mapnik
 
 ## Building
 
-1) Get mapnik master from github
-
-2) Apply this patch to Mapnik:
-
-```diff
---- a/include/mapnik/feature_style_processor_impl.hpp
-+++ b/include/mapnik/feature_style_processor_impl.hpp
-@@ -388,6 +388,13 @@ void feature_style_processor<Processor>::apply_to_layer(layer const& lay, Proces
-             q.add_property_name(name);
-         }
- 
-+        // FIXME: make user config
-+        layer_descriptor lay_desc = ds->get_descriptor();
-+        BOOST_FOREACH(attribute_descriptor const& desc, lay_desc.get_descriptors())
-+        {
-+            q.add_property_name(desc.get_name());
-+        }
-+
-         // Update filter_factor for all enabled raster layers.
-         BOOST_FOREACH (feature_type_style * style, active_styles)
-         {
-```
+1) Get mapnik master from github, at least https://github.com/mapnik/mapnik/commit/7ded35ef94a792ff2313e2087a5684c938fc1497
 
 3) Build mapnik and install protobuf
 
