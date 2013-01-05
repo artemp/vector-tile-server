@@ -41,10 +41,21 @@ var map_pool = pool({
     create: function(callback) {
         var obj = new mapnik.Map(256, 256);
         var opts = { strict: false };
+        try {
+            obj.loadSync(stylesheet, opts);
+            return callback(null,obj);
+        } catch (err) {
+            return callback(err);
+        }
+        /*
+        // async loading will trigger when calling Mapnik's datasource_cache::create
+        // if multiple tiles are accessed at the same time at first load
+        // TODO - is this a bug in Mapnik singleton impl?
         obj.load(stylesheet, opts, function(err,obj) {
             if (err) return callback(err);
             return callback(null,obj);
         });
+        */
     },
     destroy: function(obj) {
         delete obj;
