@@ -150,4 +150,4 @@ void RegisterModule(Handle<Object> target)
                 FunctionTemplate::New(render)->GetFunction());
 }
 
-NODE_MODULE(node_vector_server, RegisterModule);
+NODE_MODULE(node_vector_server, RegisterModule)
