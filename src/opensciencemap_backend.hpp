@@ -213,13 +213,13 @@ public:
         coded_output_.WriteTag(0x12);
 
         std::string buffer;
-        element_writer writer(buffer);
+        element_writer tag_writer(buffer);
 
         BOOST_FOREACH(tags::tag_type tag, tags_)
         {
-            writer.write_varint32(tag);
+            tag_writer.write_varint32(tag);
         }
-        std::size_t bytes = writer.bytes_written();
+        std::size_t bytes = tag_writer.bytes_written();
 
         coded_output_.WriteVarint32(bytes);
         coded_output_.WriteRaw(buffer.data(), bytes);

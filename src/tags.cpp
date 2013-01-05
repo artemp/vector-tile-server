@@ -759,10 +759,10 @@ boost::optional<tag_type> tag_index_from_kv(name_type const& key, std::string co
     }
     else
     {
-        tag_lookup_type::right_const_iterator right_iter = tag_lookup.right.find(key);
-        if (right_iter != tag_lookup.right.end())
+        tag_lookup_type::right_const_iterator iter = tag_lookup.right.find(key);
+        if (iter != tag_lookup.right.end())
         {
-            tag.reset(1024 + right_iter->second);
+            tag.reset(1024 + iter->second);
         }
     }
     return tag;
