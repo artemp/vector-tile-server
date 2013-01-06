@@ -25,6 +25,11 @@ usage += '\n  default stylesheet: ' + stylesheet;
 usage += '\n  default port: ' + port;
 usage += '\n  default root directory: ' + root;
 
+if (process.argv.indexOf('-h') > -1 || process.argv.indexOf('--help') > -1) {
+    console.log(usage);
+    process.exit(0);
+}
+
 if (process.argv[2]) {
     stylesheet = process.argv[2];
 }
