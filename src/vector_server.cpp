@@ -95,12 +95,20 @@ void async_render(uv_work_t* req)
 {
     render_state * state = static_cast<render_state*>(req->data);
     Map * map_ptr = state->m;
-    std::string output;
-    mapnik::opensciencemap_backend_pbf backend(output);
-    mapnik::vector_renderer<mapnik::opensciencemap_backend_pbf> ren(*map_ptr->get(),backend);
-    ren.apply();
-    uint32_t bytes = backend.output_vector_tile();
-    state->output = output.substr(0,bytes);
+    try
+    {
+        std::string output;
+        mapnik::opensciencemap_backend_pbf backend(output);
+        mapnik::vector_renderer<mapnik::opensciencemap_backend_pbf> ren(*map_ptr->get(),backend);
+        ren.apply();
+        uint32_t bytes = backend.output_vector_tile();
+        state->output = output.substr(0,bytes);
+    }
+    catch (std::exception const& ex)
+    {
+        state->error = true;
+        state->error_message = ex.what();
+    }
 }
 
 void after_render(uv_work_t* req)
