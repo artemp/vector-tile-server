@@ -65,7 +65,7 @@ var map_pool = pool({
     destroy: function(obj) {
         delete obj;
     },
-    max: require('os').cpus().length
+    max: threads
 });
 
 var parse_url = function(req, callback) {
