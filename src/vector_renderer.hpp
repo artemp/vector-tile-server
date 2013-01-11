@@ -24,21 +24,27 @@
 #define MAPNIK_VECTOR_RENDERER_HPP
 
 // mapnik
-#include <mapnik/config.hpp>
+#include <mapnik/config.hpp>            // for MAPNIK_DECL
 #include <mapnik/feature_style_processor.hpp>
-#include <mapnik/map.hpp>
-#include <mapnik/ctrans.hpp>
-#include <mapnik/rule.hpp> // for all symbolizers
+#include <mapnik/noncopyable.hpp>       // for noncopyable
+#include <mapnik/rule.hpp>              // for rule, symbolizers
+#include <mapnik/box2d.hpp>     // for box2d
+#include <mapnik/ctrans.hpp>    // for CoordTransform
 
-// boost
-#include <boost/utility.hpp>
-#include <boost/scoped_ptr.hpp>
+// fwd declarations to speed up compile
+namespace mapnik {
+  class Map;
+  class feature_impl;
+  class feature_type_style;
+  class layer;
+  class proj_transform;
+}
 
 namespace mapnik {
 
 template <typename T>
 class MAPNIK_DECL vector_renderer : public feature_style_processor<vector_renderer<T> >,
-                                    private boost::noncopyable
+                                    private mapnik::noncopyable
 {
     typedef T backend_type;
 public:

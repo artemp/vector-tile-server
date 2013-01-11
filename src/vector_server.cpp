@@ -20,14 +20,25 @@
  *
  *****************************************************************************/
 
-#include <node.h>
-#include <node_buffer.h>
+#include "vector_renderer.hpp"
+#include "opensciencemap_backend_pbf.hpp"
+// not currently used
+//#include "opensciencemap_backend.hpp"
+
+// node
+#include <node.h>                       // for FatalException, NODE_MODULE
+#include <node_buffer.h>                // for Buffer
+#include <node_object_wrap.h>           // for ObjectWrap
+
+// node-mapnik
 #include "mapnik_map.hpp"
 
-#include <string>
-#include "vector_renderer.hpp"
-#include "opensciencemap_backend.hpp"
-#include "opensciencemap_backend_pbf.hpp"
+// std
+#include <cassert>
+#include <exception>
+
+// boost
+#include <boost/shared_ptr.hpp>
 
 using namespace v8;
 
@@ -72,7 +83,7 @@ Handle<Value> render(Arguments const& args)
                                   String::New("Second argument must be a callback function")));
     }
 
-    Map* m = ObjectWrap::Unwrap<Map>(args[0]->ToObject());
+    Map* m = node::ObjectWrap::Unwrap<Map>(args[0]->ToObject());
     if (m->active() != 0)
     {
         return ThrowException(Exception::TypeError(
@@ -107,7 +118,7 @@ void async_render(uv_work_t* req)
     catch (std::exception const& ex)
     {
         state->error = true;
-        state->error_message = ex.what();
+        state->error_message = std::string("error occured during rendering: ") + ex.what();
     }
 }
 
@@ -132,7 +143,7 @@ void after_render(uv_work_t* req)
     {
         const unsigned argc = 2;
 
-        node::Buffer *buf = Buffer::New((char*)state->output.data(), state->output.size());
+        node::Buffer *buf = node::Buffer::New((char*)state->output.data(), state->output.size());
 
         Local<Value> argv[argc] = {
             Local<Value>::New(Null()),
