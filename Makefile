@@ -9,6 +9,7 @@ server:
 
 clean:
 	@rm -rf ./build
+	@rm -rf ./node_modules/mapnik
 
 distclean: clean
 	@rm -rf ./node_modules/
