@@ -68,10 +68,10 @@ var map_pool = pool({
     max: threads
 });
 
-var parse_url = function(req, callback) {
-    var matches = req.url.match(/(\d+)/g);
+var parse_url = function(uri, callback) {
+    var matches = uri.match(/(\d+)/g);
     if (matches && matches.length == 3) {
-        var format = path.extname(req.url);
+        var format = path.extname(uri);
         if (!format || !(format.indexOf('png') > -1 || format == '.osmtile')) {
             var msg = "Invalid format, only 'png' and 'osmtile' are supported";
             msg += ' (expected a url like /0/0/0.png or /0/0/0.osmtile';
@@ -160,7 +160,7 @@ http.createServer(function(req, res) {
             res.writeHead(200, {'Content-Type': mime.lookup(filepath)});
             return res.end(fs.readFileSync(filepath));
         }
-        parse_url(req, function(err,params) {
+        parse_url(uri, function(err,params) {
             if (err) {
                 return error(res,err.message);
             }
