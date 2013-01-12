@@ -111,6 +111,7 @@ var renderer = function(map, params, res) {
                 map_pool.release(map);
             });
             if (err) {
+                console.log(err);
                 return error(res,err.message)
             }
             var content_length = output.length + 4;
@@ -135,10 +136,12 @@ var renderer = function(map, params, res) {
                 map_pool.release(map);
             });
             if (err) {
+                console.log(err);
                 return error(res,err.message)
             }
             im.encode(params.format,function(err,buffer) {
                 if (err) {
+                    console.log(err);
                     return error(res,err.message)
                 }
                 res.writeHead(200, {'Content-Type': 'image/png'});
@@ -162,10 +165,12 @@ http.createServer(function(req, res) {
         }
         parse_url(uri, function(err,params) {
             if (err) {
+                console.log(err);
                 return error(res,err.message);
             }
             map_pool.acquire(function(err, map) {
                 if (err) {
+                    console.log(err);
                     return error(res,err.message)
                 }
                 return renderer(map,params,res);
