@@ -17,7 +17,6 @@
  <Style name="polygon" filter-mode="first" >
   <Rule>
     &maxscale_zoom14;
-    &minscale_zoom18;
     <PolygonSymbolizer clip="true" smooth="0"/>
   </Rule>
 </Style>
@@ -26,7 +25,6 @@
 <Style name="line" filter-mode="first" >
   <Rule>
     &maxscale_zoom12;
-    &minscale_zoom18;
     <LineSymbolizer clip="true"/>
   </Rule>
 </Style>
@@ -42,7 +40,6 @@
 <Style name="point" filter-mode="first" >
   <Rule>
     &maxscale_zoom10;
-    &minscale_zoom18;
     <PointSymbolizer />
   </Rule>
 </Style>
