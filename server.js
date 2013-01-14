@@ -188,10 +188,13 @@ http.createServer(function(req, res) {
         res.writeHead(200, {'Content-Type': 'text/html'});
         return res.end(fs.readFileSync(path.join(root,'index.html')));
     }
+    if (uri == 'favicon.ico') {
+        return error(res,'');
+    }
     var filepath = path.join(root, uri);
     exists(filepath, function(exist) {
         var format = path.extname(uri);
-        if (exist && ((format == '.osmtile') && cache) || (format != '.osmtile')) {
+        if (exist && (format == '.osmtile') && cache) {
             if (format == '.osmtile') {
                 fs.readFile(filepath,function(err,output) {
                     if (err) {
@@ -215,6 +218,9 @@ http.createServer(function(req, res) {
                 res.writeHead(200, {'Content-Type': mime.lookup(filepath)});
                 return res.end(fs.readFileSync(filepath));
             }
+        } else if (exist && (format != '.osmtile')) {
+            res.writeHead(200, {'Content-Type': mime.lookup(filepath)});
+            return res.end(fs.readFileSync(filepath));
         } else {
             parse_url(uri, function(err,params) {
                 if (err) {
