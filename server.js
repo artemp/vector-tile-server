@@ -126,20 +126,7 @@ var renderer = function(map, params, res, filepath, cache) {
                 return error(res,err.message)
             }
             console.log("TILE(%d/%d/%d) OUTPUT len=%d", params.z, params.x, params.y, output.length);
-            var content_length = output.length + 4;
-            var head = new Buffer(4);
-            head[0] = (output.length >> 24) & 0xff;
-            head[1] = (output.length >> 16) & 0xff;
-            head[2] = (output.length >>  8) & 0xff;
-            head[3] = output.length & 0xff;
-            res.writeHead(200,{'Content-length': content_length,
-                               'Content-type': 'application/osmtile'
-                              });
-            res.write(head);
-            if (!chunked) {
-                res.useChunkedEncodingByDefault=false;
-                res.chunkedEncoding=false;
-            }
+            osmtile_response(res,output);
             if (cache) {
                 var dirname = path.dirname(filepath);
                 mkdirp(dirname, function (err) {
@@ -181,6 +168,26 @@ var renderer = function(map, params, res, filepath, cache) {
     }
 };
 
+function osmtile_response(res,output) {
+    var content_length = output.length + 4;
+    var head = new Buffer(4);
+    head[0] = (output.length >> 24) & 0xff;
+    head[1] = (output.length >> 16) & 0xff;
+    head[2] = (output.length >>  8) & 0xff;
+    head[3] = output.length & 0xff;
+    res.writeHead(200,{'Content-length': content_length,
+                       'Content-type': 'application/osmtile'
+                      });
+    if (chunked) {
+        res.writeHead(200,{'Connection': 'close'});
+    } else {
+        var content_length = output.length + 4;
+        res.writeHead(200,{'Content-length': content_length});
+        res.useChunkedEncodingByDefault=false;
+        res.chunkedEncoding=false;
+    }
+    res.write(head);
+}
 
 http.createServer(function(req, res) {
     var uri = url.parse(req.url).pathname;
@@ -201,17 +208,7 @@ http.createServer(function(req, res) {
                         console.log(err);
                         return error(res,err.message);
                     }
-                    var content_length = output.length + 4;
-                    var head = new Buffer(4);
-                    head[0] = (output.length >> 24) & 0xff;
-                    head[1] = (output.length >> 16) & 0xff;
-                    head[2] = (output.length >>  8) & 0xff;
-                    head[3] = output.length & 0xff;
-                    res.writeHead(200,{'Content-length': content_length,
-                                       'Content-type': 'application/osmtile'
-                                      });
-                    res.write(head);
-                    //console.log('serving osmtile from cache!');
+                    osmtile_response(res,output);
                     return res.end(output);
                 });
             } else {
