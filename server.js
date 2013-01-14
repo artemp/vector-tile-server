@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 // vector tile server
 
 var fs = require('fs'); // todo : remove
