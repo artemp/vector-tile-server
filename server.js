@@ -21,7 +21,7 @@ eio.setMinParallel(threads);
 
 
 // should we default to chunked encoding?
-var chunked = true;
+var chunked = false;
 
 // should osmtile's be cached on demand?
 var cache = false;
