@@ -23,8 +23,11 @@ eio.setMinParallel(threads);
 // should we default to chunked encoding?
 var chunked = false;
 
-// should osmtile's be cached on demand?
+// should osmtiles be cached on demand?
 var cache = false;
+
+// should we print client details?
+var debug = false;
 
 
 var root = "./www";
@@ -162,6 +165,11 @@ var renderer = function(map, params, res, filepath, cache) {
                     return error(res,err.message)
                 }
                 res.writeHead(200, {'Content-Type': 'image/png'});
+                if (!chunked) {
+                    res.writeHead(200,{'Content-length': buffer.length});
+                    res.useChunkedEncodingByDefault=false;
+                    res.chunkedEncoding=false;
+                }
                 return res.end(buffer);
             });
         });
@@ -175,9 +183,7 @@ function osmtile_response(res,output) {
     head[1] = (output.length >> 16) & 0xff;
     head[2] = (output.length >>  8) & 0xff;
     head[3] = output.length & 0xff;
-    res.writeHead(200,{'Content-length': content_length,
-                       'Content-type': 'application/osmtile'
-                      });
+    res.writeHead(200,{'Content-type': 'application/osmtile'});
     if (chunked) {
         res.writeHead(200,{'Connection': 'close'});
     } else {
@@ -189,7 +195,7 @@ function osmtile_response(res,output) {
     res.write(head);
 }
 
-http.createServer(function(req, res) {
+var server = http.createServer(function(req, res) {
     var uri = url.parse(req.url).pathname;
     if (!uri || uri == '/') {
         res.writeHead(200, {'Content-Type': 'text/html'});
@@ -234,6 +240,26 @@ http.createServer(function(req, res) {
             });
         }
     });
-}).listen(port);
+})
+
+if (debug) {
+    server.on('connection',function(socket) {
+        console.log('new connection');
+    });
+
+    server.on('closing',function() {
+        console.log('closing')
+    });
+
+    server.on('connect',function() {
+        console.log('connect method')
+    });
+
+    server.on('clientError',function(err) {
+        console.log('clientError' + err.message)
+    });
+}
+
+server.listen(port);
 
 console.log('Vector tile server listening on port %d | directory %s', port, root);
